@@ -31,7 +31,7 @@ class SignInView {
 
 
     @Composable
-    public fun SignInUI(
+    fun SignInUI(
         onSignInClick: (String, String) -> Unit,
         onSignUpClick: () -> Unit,
         onGuestClick: () -> Unit,

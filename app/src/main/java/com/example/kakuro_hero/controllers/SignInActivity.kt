@@ -34,7 +34,10 @@ class SignInActivity : ComponentActivity() {
         setContent {
             Kakuro_Hero_First_PrototypeTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    var message by remember { mutableStateOf<String?>(null) }
+
+                    if (accountRepository.isUserSignedIn()) {
+                        navigateToHome()
+                    }
 
                     SignInView().SignInUI(
                         onSignInClick = { email, password ->
@@ -62,7 +65,8 @@ class SignInActivity : ComponentActivity() {
                     navigateToHome()
                 }
                 .onFailure { error ->
-                    message = error.message ?: "Invalid email or password."
+                    //message = error.message ?: "Invalid email or password."
+                    message = "Invalid email or password."
                 }
 
             isLoading = false
@@ -71,11 +75,13 @@ class SignInActivity : ComponentActivity() {
     private fun navigateToSignUp() {
         startActivity(Intent(this,
             SignUpActivity::class.java))
+        finish()
     }
 
     private fun navigateToHome() {
         startActivity(Intent(this,
             HomeActivity::class.java))
+        finish()
     }
 
     private fun guestSignIn() {

@@ -40,6 +40,7 @@ class HomeActivity : ComponentActivity() {
                         user = user,
                         onPlayClick = { navigateToGame() },
                         onSettingsClick = { navigateToSettings() },
+                        onProfileClick = { navigateToAccount() },
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -103,6 +104,7 @@ fun GreetingPreview3() {
             user = UserProfile("1", "William", "william.henry.harrison@example-pet-store.com"),
             onPlayClick = { /*Nothing in the Preview*/ },
             onSettingsClick = { /*Nothing in the Preview*/ },
+            onProfileClick = { /*Nothing in the Preview*/ },
             modifier = Modifier
         )
     }

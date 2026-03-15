@@ -99,6 +99,16 @@ class GameResultView {
 
                     Spacer(modifier = Modifier.height(20.dp))
 
+                    if (gameSession.gameMode == GameMode.CHALLENGING) {
+                        ScoreSection(
+                            score = gameSession.score,
+                            contentColor = contentColor
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+
+
                     SessionInfo(
                         session = gameSession,
                         contentColor = contentColor
@@ -133,6 +143,35 @@ class GameResultView {
     }
 
     @Composable
+    private fun ScoreSection(
+        score: Int,
+        contentColor: Color
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Text(
+                text = "Score",
+                style = MaterialTheme.typography.titleMedium,
+                color = contentColor
+            )
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            Text(
+                text = score.toString(),
+                style = MaterialTheme.typography.displayLarge,
+                fontWeight = FontWeight.ExtraBold,
+                color = contentColor
+            )
+        }
+    }
+
+    @Composable
     private fun SessionInfo(
         session: GameSession,
         contentColor: Color
@@ -148,7 +187,7 @@ class GameResultView {
             ) {
 
                 Text(
-                    text = "Game Session",
+                    text = "Session Details",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = contentColor

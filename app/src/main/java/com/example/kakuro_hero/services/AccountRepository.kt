@@ -13,6 +13,7 @@ class AccountRepository(
 
     companion object {
         private const val USERS_COLLECTION = "users"
+        private const val DEFAULT_AVATAR_SEED = "vex"
     }
 
     override suspend fun signUp(
@@ -31,7 +32,8 @@ class AccountRepository(
             val userProfile = UserProfile(
                 id = firebaseUser.uid,
                 username = trimmedUsername,
-                email = trimmedEmail
+                email = trimmedEmail,
+                avatarSeed = DEFAULT_AVATAR_SEED
             )
 
             firestore.collection(USERS_COLLECTION)
@@ -65,7 +67,8 @@ class AccountRepository(
                 ?: UserProfile(
                     id = firebaseUser.uid,
                     username = firebaseUser.displayName ?: "",
-                    email = firebaseUser.email ?: trimmedEmail
+                    email = firebaseUser.email ?: trimmedEmail,
+                    avatarSeed = DEFAULT_AVATAR_SEED
                 )
 
             Result.success(userProfile)
@@ -87,7 +90,9 @@ class AccountRepository(
                 ?: UserProfile(
                     id = firebaseUser.uid,
                     username = firebaseUser.displayName ?: "",
-                    email = firebaseUser.email ?: ""
+                    email = firebaseUser.email ?: "",
+                    avatarSeed = DEFAULT_AVATAR_SEED
+
                 )
 
             Result.success(userProfile)
@@ -103,11 +108,50 @@ class AccountRepository(
 
             val currentEmail = firebaseUser.email ?: ""
 
+            val snapshot = firestore.collection(USERS_COLLECTION)
+                .document(firebaseUser.uid)
+                .get()
+                .await()
+
+            val existingProfile = snapshot.toObject(UserProfile::class.java)
+
             val updatedProfile = UserProfile(
                 id = firebaseUser.uid,
                 username = username.trim(),
-                email = currentEmail
+                email = currentEmail,
+                avatarSeed = existingProfile?.avatarSeed ?: DEFAULT_AVATAR_SEED
             )
+
+            firestore.collection(USERS_COLLECTION)
+                .document(firebaseUser.uid)
+                .set(updatedProfile)
+                .await()
+
+            Result.success(updatedProfile)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun updateAvatarSeed(avatarSeed: String): Result<UserProfile> {
+        return try {
+            val firebaseUser = auth.currentUser
+                ?: return Result.failure(IllegalStateException("No authenticated user found."))
+
+            val snapshot = firestore.collection(USERS_COLLECTION)
+                .document(firebaseUser.uid)
+                .get()
+                .await()
+
+            val existingProfile = snapshot.toObject(UserProfile::class.java)
+                ?: UserProfile(
+                    id = firebaseUser.uid,
+                    username = "",
+                    email = firebaseUser.email ?: "",
+                    avatarSeed = "robot"
+                )
+
+            val updatedProfile = existingProfile.copy(avatarSeed = avatarSeed)
 
             firestore.collection(USERS_COLLECTION)
                 .document(firebaseUser.uid)

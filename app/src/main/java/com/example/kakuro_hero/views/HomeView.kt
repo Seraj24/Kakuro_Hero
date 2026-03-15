@@ -15,8 +15,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
@@ -31,10 +33,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import com.example.kakuro_hero.models.UserProfile
+import com.example.kakuro_hero.utils.AvatarUtils
 
 class HomeView {
 
@@ -43,6 +48,7 @@ class HomeView {
         user: UserProfile?,
         onPlayClick: () -> Unit,
         onSettingsClick: () -> Unit,
+        onProfileClick: () -> Unit,
         modifier: Modifier
     ) {
         Box(
@@ -51,14 +57,38 @@ class HomeView {
                 .background(MaterialTheme.colorScheme.background)
                 .padding(horizontal = 24.dp, vertical = 20.dp)
         ) {
-            IconButton(
-                onClick = onSettingsClick,
-                modifier = Modifier.align(Alignment.TopEnd)
+            Row(
+                modifier = Modifier.align(Alignment.TopEnd),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = "Settings"
-                )
+                IconButton(
+                    onClick = onProfileClick
+                ) {
+                    if (user != null) {
+                        AsyncImage(
+                            model = AvatarUtils.buildDiceBearUrl(user.avatarSeed),
+                            contentDescription = "Manage Account",
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = "Manage Account"
+                        )
+                    }
+                }
+
+                IconButton(
+                    onClick = onSettingsClick
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Settings"
+                    )
+                }
             }
 
             Column(

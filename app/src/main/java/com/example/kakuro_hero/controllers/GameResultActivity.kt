@@ -40,11 +40,13 @@ class GameResultActivity : ComponentActivity() {
     }
 
     private fun navigateToGame() {
-        startActivity(Intent(this, GameActivity::class.java))
+        GameSessionHolder.currentSession = null
+        startActivity(Intent(this, GameSetupActivity::class.java))
         finish()
     }
 
     private fun navigateToHome() {
+        GameSessionHolder.currentSession = null
         startActivity(Intent(this, HomeActivity::class.java))
         finish()
     }

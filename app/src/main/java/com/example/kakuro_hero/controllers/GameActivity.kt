@@ -15,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import com.example.kakuro_hero.models.CellPosition
+import com.example.kakuro_hero.models.ChallengeConstraints
 import com.example.kakuro_hero.models.GameMode
 import com.example.kakuro_hero.models.GameResult
 import com.example.kakuro_hero.models.HintType
@@ -451,12 +452,74 @@ class GameActivity : ComponentActivity() {
                     (System.currentTimeMillis() - sessionStartTimeMillis - totalPausedDurationMillis) / 1000
                     ).toInt()
 
+        val totalScore = calculateScore()
+
         gameSession = gameSession.copy(
             result = if (solved) GameResult.WIN else GameResult.LOSE,
-            sessionTime = elapsedSeconds
+            sessionTime = elapsedSeconds,
+            score = totalScore
         )
 
         resultReady = true
+    }
+
+    private fun calculateScore() : Int {
+
+        if (!isChallengingMode() || !isPuzzleSolved()) return 0
+
+        var totalScore = 0
+
+        if (isPuzzleSolved()) totalScore += 50
+
+        when (gameSession.pressureType) {
+            PressureType.TIME_BASED -> {
+                totalScore += calculateTimeScore()
+            }
+
+            PressureType.MISTAKE_LIMIT -> {
+                totalScore += calculateMistakeScore()
+            }
+
+            PressureType.KAKURO_HERO -> {
+                totalScore += calculateTimeScore()
+                totalScore += calculateMistakeScore()
+            }
+
+            else -> Unit
+        }
+
+        return  totalScore
+
+    }
+
+    private fun calculateTimeScore(): Int {
+
+        val constraint = ChallengeConstraints.getRule(
+            gameSession.pressureType,
+            gameSession.difficulty
+        )
+
+        val initialTime = constraint.timeSeconds ?: return 0
+
+        if (initialTime <= 0) return 0
+
+        val timeLeft = remainingSeconds.coerceAtLeast(0)
+
+        val percentLeft = (timeLeft.toDouble() / initialTime.toDouble()) * 100
+
+        return (percentLeft * 4).toInt().coerceIn(0, 400)
+    }
+
+    private fun calculateMistakeScore(): Int {
+        val maxMistakes = gameSession.maxMistakes ?: return 0
+        if (maxMistakes <= 0) return 0
+
+        val remainingMistakeCapacity = (maxMistakes - gameSession.mistakes).coerceAtLeast(0)
+
+        val score =
+            (remainingMistakeCapacity.toDouble() / maxMistakes.toDouble()) * 400.0
+
+        return score.toInt().coerceIn(0, 400)
     }
 
     private fun isPuzzleSolved(): Boolean {

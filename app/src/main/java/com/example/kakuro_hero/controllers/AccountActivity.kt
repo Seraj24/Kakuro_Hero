@@ -49,13 +49,14 @@ class AccountActivity : ComponentActivity() {
                         onSaveClick = { newUsername ->
                             saveProfile(newUsername)
                         },
-                        onChangeProfileImageClick = { /* TODO */ },
+                        onAvatarSelectClick = { avatarSeed ->
+                            updateAvatarSeed(avatarSeed)
+                        },
                         onSignInClick = { navigateToSignIn() },
                         onSignUpClick = { navigateToSignUp() },
                         onSignOutClick = {
                             accountRepository.signOut()
                             user = null
-                            message = "Signed out."
                             finish()
                         },
                         onDeleteClick = { deleteAccount() },
@@ -97,6 +98,26 @@ class AccountActivity : ComponentActivity() {
         }
     }
 
+    private fun updateAvatarSeed(avatarSeed: String) {
+        lifecycleScope.launch {
+            isLoading = true
+            message = null
+
+            val result = accountRepository.updateAvatarSeed(avatarSeed)
+
+            result
+                .onSuccess { updatedUser ->
+                    user = updatedUser
+                    message = "Avatar updated successfully."
+                }
+                .onFailure { error ->
+                    message = error.message ?: "Failed to update avatar."
+                }
+
+            isLoading = false
+        }
+    }
+
     private fun deleteAccount() {
         lifecycleScope.launch {
             isLoading = true
@@ -121,9 +142,11 @@ class AccountActivity : ComponentActivity() {
 
     private fun navigateToSignIn() {
         startActivity(Intent(this, SignInActivity::class.java))
+        finish()
     }
     private fun navigateToSignUp() {
         startActivity(Intent(this, SignUpActivity::class.java))
+        finish()
     }
 }
 
@@ -136,7 +159,7 @@ fun GreetingPreview5() {
             user = UserProfile("1", "William", "william.henry.harrison@example-pet-store.com"),
             onBackClick = { /*Nothing in the Preview*/ },
             onSaveClick = { /*Nothing in the Preview*/ },
-            onChangeProfileImageClick = { /*Nothing in the Preview*/ },
+            onAvatarSelectClick = { /*Nothing in the Preview*/ },
             onSignInClick = { /*Nothing in the Preview*/ },
             onSignUpClick = { /*Nothing in the Preview*/ },
             onSignOutClick = { /*Nothing in the Preview*/ },
