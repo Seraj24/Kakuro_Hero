@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Kakuro Hero</string>
+    <string name="title_activity_test">Test</string>
+    <string name="title_activity_sign_up">SignUpActivity</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_account">AccountActivity</string>
+    <string name="title_activity_game">GameActivity</string>
+    <string name="title_activity_game_result_view">GameResultView</string>
+    <string name="title_activity_game_result">GameResultActivity</string>
+    <string name="title_activity_game_mode_select">GameModeSelectActivity</string>
+    <string name="title_activity_game_setup">GameSetupActivity</string>
+</resources>

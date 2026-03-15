@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "345975109349",
+    "project_id": "kakurohero",
+    "storage_bucket": "kakurohero.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:345975109349:android:8c2655063074c427c7860c",
+        "android_client_info": {
+          "package_name": "com.seraj.kakuro_hero"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDk1l6bGsFyLnTCrkGYrr6A-i1e-jtaGmo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
