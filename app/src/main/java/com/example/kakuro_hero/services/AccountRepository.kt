@@ -1,6 +1,7 @@
 package com.example.kakuro_hero.services
 
 import com.example.kakuro_hero.models.UserProfile
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.firestore.FirebaseFirestore
@@ -128,6 +129,28 @@ class AccountRepository(
                 .await()
 
             Result.success(updatedProfile)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun updatePassword(
+        currentPassword: String,
+        newPassword: String
+    ): Result<Unit> {
+        return try {
+            val firebaseUser = auth.currentUser
+                ?: return Result.failure(IllegalStateException("No authenticated user found."))
+
+            val email = firebaseUser.email
+                ?: return Result.failure(IllegalStateException("No email found for current user."))
+
+            val credential = EmailAuthProvider.getCredential(email, currentPassword.trim())
+
+            firebaseUser.reauthenticate(credential).await()
+            firebaseUser.updatePassword(newPassword.trim()).await()
+
+            Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }

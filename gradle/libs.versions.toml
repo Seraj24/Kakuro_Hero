@@ -24,6 +24,7 @@ foundation = "1.10.3"
 firebaseAuthKtx = "24.0.1"
 firebaseFirestoreKtx = "26.1.1"
 runtimeVersion = "1.10.4"
+uiText = "1.10.5"
 
 [libraries]
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
@@ -60,6 +61,7 @@ androidx-compose-foundation = { group = "androidx.compose.foundation", name = "f
 google-firebase-auth = { module = "com.google.firebase:firebase-auth" }
 google-firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 androidx-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtimeVersion" }
+androidx-compose-ui-text = { group = "androidx.compose.ui", name = "ui-text", version.ref = "uiText" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

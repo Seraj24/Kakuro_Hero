@@ -29,19 +29,15 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.example.kakuro_hero.models.UserProfile
-import com.example.kakuro_hero.services.ProfileValidator
 import com.example.kakuro_hero.ui.FormContainer
 import com.example.kakuro_hero.ui.FormHeader
 import com.example.kakuro_hero.utils.AvatarUtils
@@ -51,18 +47,35 @@ class AccountView {
     @Composable
     fun AccountUI(
         user: UserProfile?,
+        username: String,
+        currentPassword: String,
+        newPassword: String,
+        isEditingUsername: Boolean,
+        isEditingPassword: Boolean,
+        usernameError: String?,
+        canSaveProfile: Boolean,
+        canUpdatePassword: Boolean,
+        onUsernameChange: (String) -> Unit,
+        onCurrentPasswordChange: (String) -> Unit,
+        onNewPasswordChange: (String) -> Unit,
+        onStartEditingClick: () -> Unit,
+        onCancelEditingClick: () -> Unit,
+        onStartPasswordEditingClick: () -> Unit,
+        onCancelPasswordEditingClick: () -> Unit,
         onBackClick: () -> Unit,
-        onSaveClick: (String) -> Unit,
+        onSaveClick: () -> Unit,
+        onConfirmPasswordClick: () -> Unit,
         onAvatarSelectClick: (String) -> Unit,
         onSignInClick: () -> Unit,
         onSignUpClick: () -> Unit,
         onSignOutClick: () -> Unit,
         onDeleteClick: () -> Unit,
-        modifier: Modifier,
+        modifier: Modifier = Modifier,
         message: String? = null,
         isLoading: Boolean = false
     ) {
         val corner = RoundedCornerShape(20.dp)
+        val fieldShape = RoundedCornerShape(18.dp)
         val scrollState = rememberScrollState()
 
         if (user == null) {
@@ -70,7 +83,6 @@ class AccountView {
                 modifier = modifier,
                 contentAlignment = Alignment.TopCenter
             ) {
-
                 FormHeader("Account")
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -131,18 +143,6 @@ class AccountView {
             return
         }
 
-        var username by remember(user) { mutableStateOf(user.username) }
-        var isEditing by remember(user) { mutableStateOf(false) }
-
-        val usernameError = remember(username, isEditing) {
-            ProfileValidator.validateUsername(username)
-        }
-
-        val canSave =
-            isEditing &&
-                    usernameError == null &&
-                    username.trim() != user.username.trim()
-
         FormContainer(
             modifier = modifier,
             contentAlignment = Alignment.TopCenter
@@ -152,11 +152,9 @@ class AccountView {
                     .fillMaxWidth()
                     .verticalScroll(scrollState)
             ) {
-
                 Box(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-
                     IconButton(
                         onClick = onBackClick,
                         modifier = Modifier.align(Alignment.CenterStart)
@@ -205,109 +203,188 @@ class AccountView {
                     }
                 }
 
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Text(
+                    text = "Profile Information",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Email",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedTextField(
+                    value = user.email,
+                    onValueChange = {},
+                    readOnly = true,
+                    singleLine = true,
+                    enabled = false,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = fieldShape
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Username",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedTextField(
+                    value = username,
+                    onValueChange = onUsernameChange,
+                    singleLine = true,
+                    enabled = isEditingUsername && !isLoading,
+                    isError = usernameError != null,
+                    supportingText = {
+                        if (usernameError != null) {
+                            Text(usernameError)
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = fieldShape,
+                    placeholder = {
+                        Text("Enter your username")
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                if (!isEditingUsername) {
+                    Button(
+                        onClick = onStartEditingClick,
+                        enabled = !isLoading,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        shape = corner
+                    ) {
+                        Text("Edit Username")
+                    }
+                } else {
+                    Button(
+                        onClick = onSaveClick,
+                        enabled = canSaveProfile && !isLoading,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        shape = corner
+                    ) {
+                        Text("Save Username")
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    OutlinedButton(
+                        onClick = onCancelEditingClick,
+                        enabled = !isLoading,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        shape = corner
+                    ) {
+                        Text("Cancel")
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(28.dp))
 
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = "Username",
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+                Text(
+                    text = "Change Password",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                    OutlinedTextField(
-                        value = username,
-                        onValueChange = { username = it },
-                        singleLine = true,
-                        enabled = isEditing && !isLoading,
-                        isError = usernameError != null,
-                        supportingText = {
-                            if (usernameError != null) {
-                                Text(usernameError)
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(18.dp),
-                        placeholder = {
-                            Text("Enter your username")
-                        }
-                    )
+                OutlinedTextField(
+                    value = currentPassword,
+                    onValueChange = onCurrentPasswordChange,
+                    singleLine = true,
+                    enabled = isEditingPassword && !isLoading,
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = fieldShape,
+                    placeholder = {
+                        Text("Enter current password")
+                    }
+                )
 
-                    Spacer(modifier = Modifier.height(18.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-                    Text(
-                        text = "Email",
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+                OutlinedTextField(
+                    value = newPassword,
+                    onValueChange = onNewPasswordChange,
+                    singleLine = true,
+                    enabled = isEditingPassword && !isLoading,
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = fieldShape,
+                    placeholder = {
+                        Text("Enter new password")
+                    }
+                )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                    OutlinedTextField(
-                        value = user.email,
-                        onValueChange = {},
-                        singleLine = true,
-                        enabled = false,
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(18.dp)
-                    )
-
-                    if (message != null) {
-                        Spacer(modifier = Modifier.height(14.dp))
-
-                        Text(
-                            text = message,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                if (!isEditingPassword) {
+                    Button(
+                        onClick = onStartPasswordEditingClick,
+                        enabled = !isLoading,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        shape = corner
+                    ) {
+                        Text("Update Password")
+                    }
+                } else {
+                    Button(
+                        onClick = onConfirmPasswordClick,
+                        enabled = canUpdatePassword && !isLoading,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        shape = corner
+                    ) {
+                        Text("Confirm Password")
                     }
 
-                    Spacer(modifier = Modifier.height(22.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
-                    if (!isEditing) {
-                        Button(
-                            onClick = { isEditing = true },
-                            enabled = !isLoading,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp),
-                            shape = RoundedCornerShape(20.dp)
-                        ) {
-                            Text("Edit Profile")
-                        }
-                    } else {
-                        Button(
-                            onClick = { onSaveClick(username.trim()) },
-                            enabled = canSave && !isLoading,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp),
-                            shape = RoundedCornerShape(20.dp)
-                        ) {
-                            Text("Save Changes")
-                        }
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        OutlinedButton(
-                            onClick = {
-                                username = user.username
-                                isEditing = false
-                            },
-                            enabled = !isLoading,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp),
-                            shape = RoundedCornerShape(20.dp)
-                        ) {
-                            Text("Cancel")
-                        }
+                    OutlinedButton(
+                        onClick = onCancelPasswordEditingClick,
+                        enabled = !isLoading,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                        shape = corner
+                    ) {
+                        Text("Cancel")
                     }
+                }
+
+                if (message != null) {
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Text(
+                        text = message,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -364,7 +441,6 @@ class AccountView {
                 }
             }
         }
-
     }
 
     @Composable
