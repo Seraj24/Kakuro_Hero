@@ -465,7 +465,7 @@ class GameActivity : ComponentActivity() {
 
     private fun calculateScore() : Int {
 
-        if (!isChallengingMode() || !isPuzzleSolved()) return 0
+        if (!isChallengingMode()) return 0
 
         var totalScore = 0
 

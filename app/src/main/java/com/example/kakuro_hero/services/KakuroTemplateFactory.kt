@@ -22,25 +22,25 @@ class KakuroTemplateFactory : IKakuroTemplateFactory {
         val t1 = KakuroTemplate(
             size = 4,
             playable = listOf(
-                listOf(true, true, true, false),
-                listOf(true, true, true, false),
-                listOf(false, true, true, true),
-                listOf(false, true, true, true)
+                listOf(false, false, false, false),
+                listOf(false, true,  true,  false),
+                listOf(false, true,  true,  true),
+                listOf(false, false, true,  true)
             )
         )
 
         val t2 = KakuroTemplate(
             size = 4,
             playable = listOf(
-                listOf(true, true, false, false),
-                listOf(true, true, true, false),
-                listOf(false, true, true, true),
-                listOf(false, false, true, true)
+                listOf(false, false, false, false),
+                listOf(false, true,  true,  false),
+                listOf(false, true,  true,  false),
+                listOf(false, true,  true,  false)
             )
         )
 
         return when (difficulty) {
-            Difficulty.EASY -> listOf(t1)
+            Difficulty.EASY -> listOf(t1, t2)
             Difficulty.MEDIUM -> listOf(t1, t2)
             Difficulty.HARD -> listOf(t2, t1)
             Difficulty.EXPERT -> listOf(t2)
@@ -51,30 +51,41 @@ class KakuroTemplateFactory : IKakuroTemplateFactory {
         val t1 = KakuroTemplate(
             size = 5,
             playable = listOf(
-                listOf(true, true, false, false, false),
-                listOf(true, true, true, false, false),
-                listOf(true, true, true, true, false),
-                listOf(false, true, true, true, true),
-                listOf(false, false, true, true, true)
+                listOf(false, false, false, false, false),
+                listOf(false, true,  true,  false, false),
+                listOf(false, true,  true,  true,  false),
+                listOf(false, true,  true,  true,  false),
+                listOf(false, false, true,  true,  false)
             )
         )
 
         val t2 = KakuroTemplate(
             size = 5,
             playable = listOf(
-                listOf(true, true, true, false, false),
-                listOf(true, true, true, false, false),
-                listOf(false, true, true, true, false),
-                listOf(false, true, true, true, true),
-                listOf(false, false, true, true, true)
+                listOf(false, false, false, false, false),
+                listOf(false, true,  true,  true,  false),
+                listOf(false, true,  true,  true,  false),
+                listOf(false, false, true,  true,  true),
+                listOf(false, false, true,  true,  true)
+            )
+        )
+
+        val t3 = KakuroTemplate(
+            size = 5,
+            playable = listOf(
+                listOf(false, false, false, false, false),
+                listOf(false, true,  true,  false, false),
+                listOf(false, true,  true,  true,  false),
+                listOf(false, false, true,  true,  true),
+                listOf(false, false, true,  true,  true)
             )
         )
 
         return when (difficulty) {
-            Difficulty.EASY -> listOf(t1)
-            Difficulty.MEDIUM -> listOf(t1, t2)
-            Difficulty.HARD -> listOf(t2, t1)
-            Difficulty.EXPERT -> listOf(t2)
+            Difficulty.EASY -> listOf(t1, t2)
+            Difficulty.MEDIUM -> listOf(t1, t2, t3)
+            Difficulty.HARD -> listOf(t2, t3, t1)
+            Difficulty.EXPERT -> listOf(t3, t2)
         }
     }
 
@@ -82,20 +93,44 @@ class KakuroTemplateFactory : IKakuroTemplateFactory {
         val t1 = KakuroTemplate(
             size = 6,
             playable = listOf(
-                listOf(true, true, true, false, false, false),
-                listOf(true, true, true, false, true, true),
-                listOf(false, true, true, true, true, true),
-                listOf(false, true, true, true, true, false),
-                listOf(false, false, true, true, true, true),
-                listOf(false, false, false, true, true, true)
+                listOf(false, false, false, false, false, false),
+                listOf(false, true,  true,  true,  false, false),
+                listOf(false, true,  true,  true,  false, false),
+                listOf(false, true,  true,  true,  true,  false),
+                listOf(false, false, true,  true,  true,  true),
+                listOf(false, false, false, true,  true,  true)
+            )
+        )
+
+        val t2 = KakuroTemplate(
+            size = 6,
+            playable = listOf(
+                listOf(false, false, false, false, false, false),
+                listOf(false, true,  true,  false, false, false),
+                listOf(false, true,  true,  true,  false, false),
+                listOf(false, true,  true,  true,  true,  false),
+                listOf(false, false, true,  true,  true,  true),
+                listOf(false, false, false, true,  true,  true)
+            )
+        )
+
+        val t3 = KakuroTemplate(
+            size = 6,
+            playable = listOf(
+                listOf(false, false, false, false, false, false),
+                listOf(false, true,  true,  true,  false, false),
+                listOf(false, true,  true,  true,  true,  false),
+                listOf(false, false, true,  true,  true,  false),
+                listOf(false, false, true,  true,  true,  true),
+                listOf(false, false, false, true,  true,  true)
             )
         )
 
         return when (difficulty) {
-            Difficulty.EASY -> listOf(t1)
-            Difficulty.MEDIUM -> listOf(t1)
-            Difficulty.HARD -> listOf(t1)
-            Difficulty.EXPERT -> listOf(t1)
+            Difficulty.EASY -> listOf(t1, t2)
+            Difficulty.MEDIUM -> listOf(t1, t2, t3)
+            Difficulty.HARD -> listOf(t2, t3, t1)
+            Difficulty.EXPERT -> listOf(t3, t2)
         }
     }
 
@@ -103,21 +138,47 @@ class KakuroTemplateFactory : IKakuroTemplateFactory {
         val t1 = KakuroTemplate(
             size = 7,
             playable = listOf(
-                listOf(true, true, true, false, false, false, false),
-                listOf(true, true, true, true, false, false, false),
-                listOf(true, true, true, true, true, false, false),
-                listOf(false, true, true, true, true, true, false),
-                listOf(false, false, true, true, true, true, true),
-                listOf(false, false, false, true, true, true, true),
-                listOf(false, false, false, true, true, true, true)
+                listOf(false, false, false, false, false, false, false),
+                listOf(false, true,  true,  true,  false, false, false),
+                listOf(false, true,  true,  true,  true,  false, false),
+                listOf(false, true,  true,  true,  true,  true,  false),
+                listOf(false, false, true,  true,  true,  true,  false),
+                listOf(false, false, true,  true,  true,  true,  true),
+                listOf(false, false, false, true,  true,  true,  true)
+            )
+        )
+
+        val t2 = KakuroTemplate(
+            size = 7,
+            playable = listOf(
+                listOf(false, false, false, false, false, false, false),
+                listOf(false, true,  true,  false, false, false, false),
+                listOf(false, true,  true,  true,  false, false, false),
+                listOf(false, true,  true,  true,  true,  false, false),
+                listOf(false, false, true,  true,  true,  true,  false),
+                listOf(false, false, true,  true,  true,  true,  true),
+                listOf(false, false, false, true,  true,  true,  true)
+            )
+        )
+
+        val t3 = KakuroTemplate(
+            size = 7,
+            playable = listOf(
+                listOf(false, false, false, false, false, false, false),
+                listOf(false, true,  true,  true,  false, false, false),
+                listOf(false, true,  true,  true,  true,  false, false),
+                listOf(false, false, true,  true,  true,  true,  false),
+                listOf(false, false, true,  true,  true,  true,  false),
+                listOf(false, false, false, true,  true,  true,  true),
+                listOf(false, false, false, true,  true,  true,  true)
             )
         )
 
         return when (difficulty) {
-            Difficulty.EASY -> listOf(t1)
-            Difficulty.MEDIUM -> listOf(t1)
-            Difficulty.HARD -> listOf(t1)
-            Difficulty.EXPERT -> listOf(t1)
+            Difficulty.EASY -> listOf(t1, t2)
+            Difficulty.MEDIUM -> listOf(t1, t2, t3)
+            Difficulty.HARD -> listOf(t2, t3, t1)
+            Difficulty.EXPERT -> listOf(t3, t2)
         }
     }
 }
